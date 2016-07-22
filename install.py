@@ -16,7 +16,8 @@ class Installer:
                          "release": platform.uname()[2]}
 
         self.dependencies = {
-            "ubuntu": "3.11.0-15-generic"
+            "ubuntu": "3.11.0-15-generic",
+            "centos": "3.10.0-229.el7.x86_64"
         }
         self.installation = {
             "ubuntu": [
@@ -24,8 +25,11 @@ class Installer:
                 ["apt-get", "install", "apt-transport-https",
                             "ca-certificates"],
                 ["apt-key", "adv", "--keyserver", "hkp://p80.pool.sks-keyservers.net:80",
-                    "--recv-keys", "58118E89F3A912897C070ADBF76221572C52609D"]
-            ]
+                    "--recv-keys", "58118E89F3A912897C070ADBF76221572C52609D"],
+                ["touch", "/etc/apt/sources.list.d/docker.list"]
+            ],
+
+
         }
         self.versionDependencies = {
             "ubuntu": {
@@ -33,19 +37,38 @@ class Installer:
                     "commands": [
                         ["apt-get", "update"],
                         ["apt-get", "install", "linux-image-extra-" +
-                            self.platform["release"]]
+                            self.platform["release"]],
+                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-xenial main'",
+                            ">", "/etc/apt/sources.list.d/docker.list"]
                     ]},
                 "14.04": {
-                    "commands": [["apt-get", "install", "-y", "apparmor"]]
+                    "commands": [
+                        ["apt-get", "install", "-y", "apparmor"],
+                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-trusty main'",
+                            ">", "/etc/apt/sources.list.d/docker.list"]
+
+                    ]
                 },
                 "12.04": {
                     "commands": [["apt-get", "install", "-y", "apparmor"]],
                     "min_kernel": "3.13",
                     "update_kernel": [
-                        ["apt-get", "install", "linux-image-generic-lts-trusty"]
+                        ["apt-get", "install", "linux-image-generic-lts-trusty"],
+                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-precise main'",
+                            ">", "/etc/apt/sources.list.d/docker.list"]
                     ]
                 }
             }
+        }
+        self.afterDependenciesInstallation = {
+            "ubuntu": [
+                ["apt-get", "update"],
+                ["apt-get", "purge", "lxc-docker"],
+                ["apt-cache", "policy", "docker-engine"],
+                ["apt-get", "update"],
+                ["apt-get", "install", "-y","docker-engine"],
+                ["service", "docker", "start"]
+            ]
         }
 
     def checkDependencies(self):
@@ -87,6 +110,9 @@ class Installer:
         if(self.checkDependencies()):
             installation = self.installation[self.platform["dist"][0]]
             for execution in installation:
+                call(execution)
+            installDocker = self.afterDependenciesInstallation[self.platform["dist"][0]]
+            for execution in installDocker:
                 call(execution)
 
 Installer = Installer()
