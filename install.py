@@ -11,15 +11,16 @@ class Installer:
 
     def __init__(self):
         dist = platform.dist()
+        self.file = False;
         self.platform = {"system": platform.system(),
                          "dist": (dist[0].lower(), dist[1].lower(), dist[2].lower()),
                          "release": platform.uname()[2]}
 
-        self.dependencies = {
+        self.minKernelVersion = {
             "ubuntu": "3.11.0-15-generic",
             "centos": "3.10.0-229.el7.x86_64"
         }
-        self.installation = {
+        self.genericInstallation = {
             "ubuntu": [
                 ['apt-get', 'update'],
                 ["apt-get", "install", "apt-transport-https",
@@ -31,32 +32,32 @@ class Installer:
 
 
         }
-        self.versionDependencies = {
+        self.dependenciesByVersion = {
             "ubuntu": {
                 "16.04": {
                     "commands": [
                         ["apt-get", "update"],
                         ["apt-get", "install", "linux-image-extra-" +
-                            self.platform["release"]],
-                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-xenial main'",
-                            ">", "/etc/apt/sources.list.d/docker.list"]
-                    ]},
+                            self.platform["release"]]
+                    ],
+                    "docker_file":"/etc/apt/sources.list.d/docker.list",
+                    "repo_content":["deb https://apt.dockerproject.org/repo ubuntu-xenial main"]
+                    },
                 "14.04": {
                     "commands": [
-                        ["apt-get", "install", "-y", "apparmor"],
-                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-trusty main'",
-                            ">", "/etc/apt/sources.list.d/docker.list"]
-
-                    ]
+                        ["apt-get", "install", "-y", "apparmor"]
+                    ],
+                    "docker_file":"/etc/apt/sources.list.d/docker.list",
+                    "repo_content":["deb https://apt.dockerproject.org/repo ubuntu-trusty main"]
                 },
                 "12.04": {
                     "commands": [["apt-get", "install", "-y", "apparmor"]],
                     "min_kernel": "3.13",
                     "update_kernel": [
-                        ["apt-get", "install", "linux-image-generic-lts-trusty"],
-                        ["echo", "'deb https://apt.dockerproject.org/repo ubuntu-precise main'",
-                            ">", "/etc/apt/sources.list.d/docker.list"]
-                    ]
+                        ["apt-get", "install", "linux-image-generic-lts-trusty"]
+                    ],
+                    "docker_file":"/etc/apt/sources.list.d/docker.list",
+                    "repo_content":["deb https://apt.dockerproject.org/repo ubuntu-precise main"]
                 }
             }
         }
@@ -72,13 +73,13 @@ class Installer:
         }
 
     def checkDependencies(self):
-        if(self.platform["dist"][0] in self.dependencies):
+        if(self.platform["dist"][0] in self.minKernelVersion):
             print("supported system")
             dist = self.platform["dist"][0]
             # TODO:decide witch format is good.
-            releaseRequired = re.sub("[a-zA-Z]", "", self.dependencies[dist])
+            releaseRequired = re.sub("[a-zA-Z]", "", self.minKernelVersion[dist])
             releaseVersion = re.sub("[a-zA-Z]", "", self.platform["release"])
-            if(releaseRequired <= releaseVersion and self.dependencies[dist] <= self.platform["release"]):
+            if(releaseRequired <= releaseVersion and self.minKernelVersion[dist] <= self.platform["release"]):
                 print("system meets dependencies.")
                 self.installDependencies()
                 return True
@@ -92,7 +93,7 @@ class Installer:
     def installDependencies(self):
         dist_name = self.platform["dist"][0]
         dist_version = self.platform["dist"][1]
-        versionDependencies = self.versionDependencies[dist_name][dist_version]
+        versionDependencies = self.dependenciesByVersion[dist_name][dist_version]
         commands = versionDependencies["commands"]
         for command in commands:
             call(command)
@@ -105,10 +106,17 @@ class Installer:
                 if("update_kernel" in versionDependencies):
                     for command in versionDependencies["update_kernel"]:
                         dist(command)
+        docker_file = open(versionDependencies["docker_file"],"w")
+        repos = versionDependencies["repo_content"]
+        try:
+            for repo in repos:
+                docker_file.write(repo+"\n")
+        finally:
+            docker_file.close()
 
     def install(self):
         if(self.checkDependencies()):
-            installation = self.installation[self.platform["dist"][0]]
+            installation = self.genericInstallation[self.platform["dist"][0]]
             for execution in installation:
                 call(execution)
             installDocker = self.afterDependenciesInstallation[self.platform["dist"][0]]
