@@ -67,7 +67,7 @@ class Installer:
                     "docker_file": "/etc/yum.repos.d/docker.repo",
                     "repo_content": [
                         "[dockerrepo]",
-                        "name=Docker Repository"
+                        "name=Docker Repository",
                         "baseurl=https://yum.dockerproject.org/repo/main/centos/7/",
                         "enabled=1",
                         "gpgcheck=1",
