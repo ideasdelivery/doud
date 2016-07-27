@@ -86,7 +86,8 @@ class Installer:
                 ["service", "docker", "start"]
             ],
             "centos": [
-                ["yum", "install", "docker-engine"],
+                ["yum","update"],
+                ["yum", "install","-y", "docker-engine"],
                 ["service", "docker", "start"]
             ]
         }
