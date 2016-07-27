@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import os
 import platform
@@ -13,7 +13,7 @@ class Installer:
         dist = platform.dist()
         self.file = False
         self.platform = {"system": platform.system(),
-                         "dist": (dist[0].lower(), re.search("[0-9]",dist[1].lower()).group(0), dist[2].lower()),
+                         "dist": (dist[0].lower(), re.search("[0-9]", dist[1].lower()).group(0), dist[2].lower()),
                          "release": platform.uname()[2]}
 
         self.minKernelVersion = {
@@ -61,10 +61,10 @@ class Installer:
                     "docker_file": "/etc/apt/sources.list.d/docker.list",
                     "repo_content": ["deb https://apt.dockerproject.org/repo ubuntu-precise main"]
                 }
-            }
+            },
             "centos": {
                 "7": {
-                    "docker_file": "/etc/yum.repos.d/docker.repo"
+                    "docker_file": "/etc/yum.repos.d/docker.repo",
                     "repo_content": [
                         "[dockerrepo]",
                         "name=Docker Repository"
@@ -85,8 +85,8 @@ class Installer:
                 ["apt-get", "install", "-y", "docker-engine"],
                 ["service", "docker", "start"]
             ],
-            "centos":[
-                ["yum" ,"install", "docker-engine"],
+            "centos": [
+                ["yum", "install", "docker-engine"],
                 ["service", "docker", "start"]
             ]
         }
@@ -115,9 +115,10 @@ class Installer:
         dist_version = self.platform["dist"][1]
         versionDependencies = self.dependenciesByVersion[
             dist_name][dist_version]
-        commands = versionDependencies["commands"]
-        for command in commands:
-            call(command)
+        if("commands" in versionDependencies):
+            commands = versionDependencies["commands"]
+            for command in commands:
+                call(command)
         if("min_kernel" in versionDependencies):
             if(versionDependencies["min_kernel"] <= self.platform["release"]):
                 print("system meets dependencies.")
