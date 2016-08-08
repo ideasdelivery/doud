@@ -3,7 +3,7 @@
 import os
 import platform
 import re
-
+import getpass
 from subprocess import call
 
 
@@ -11,9 +11,10 @@ class Installer:
 
     def __init__(self):
         dist = platform.dist()
+        self.user = getpass.getuser()
         self.file = False
         self.platform = {"system": platform.system(),
-                         "dist": (dist[0].lower(), re.search("[0-9]", dist[1].lower()).group(0), dist[2].lower()),
+                         "dist": (dist[0].lower(), re.search("[0-9]{1,10}", dist[1].lower()).group(0), dist[2].lower()),
                          "release": platform.uname()[2]}
 
         self.minKernelVersion = {
@@ -86,10 +87,16 @@ class Installer:
                 ["service", "docker", "start"]
             ],
             "centos": [
-                ["yum","update"],
-                ["yum", "install","-y", "docker-engine"],
+                ["yum", "update"],
+                ["yum", "install", "-y", "docker-engine"],
                 ["service", "docker", "start"]
             ]
+        }
+        self.afterInstallationCommand = {
+            "ubuntu": {
+                "*": [["groupadd", "docker"],
+                      ["usermod", "-aG", "docker", self.user]]
+            }
         }
 
     def checkDependencies(self):
@@ -114,6 +121,8 @@ class Installer:
     def installDependencies(self):
         dist_name = self.platform["dist"][0]
         dist_version = self.platform["dist"][1]
+        print("dist_name: " + dist_name)
+        print("dist_version: " + dist_version)
         versionDependencies = self.dependenciesByVersion[
             dist_name][dist_version]
         if("commands" in versionDependencies):
@@ -136,6 +145,17 @@ class Installer:
                 docker_file.write(repo + "\n")
         finally:
             docker_file.close()
+
+    def afterInstallConfiguration(self):
+        dist_name = self.platform["dist"][0]
+        dist_version = self.platform["dist"][1]
+        if dist_name in self.afterInstallationCommand:
+            command_version = self.afterInstallationCommand[dist_name]
+            if(dist_version in command_version or "*" in command_version):
+                if("*" in command_version):
+                    dist_version = "*"
+                for command in command_version[dist_version]:
+                    call(command)
 
     def install(self):
         if(self.checkDependencies()):
