@@ -15,7 +15,8 @@ class Installer:
         self.file = False
         self.platform = {"system": platform.system(),
                          "dist": (dist[0].lower(), re.search("[0-9]{1,10}", dist[1].lower()).group(0), dist[2].lower()),
-                         "release": platform.uname()[2]}
+                         "release": platform.uname()[2],
+                         "uname": platform.uname()}
 
         self.minKernelVersion = {
             "ubuntu": "3.11.0-15-generic",
@@ -157,6 +158,12 @@ class Installer:
                 for command in command_version[dist_version]:
                     call(command)
 
+    def installDockerComposer(self):
+        command = ["curl", "-L", "https://github.com/docker/compose/releases/download/1.8.0/docker-compose-" +
+                    self.platform.uname[0] + "-" + self.platform.uname[5], "-o",  "/usr/local/bin/docker-compose"]
+        call(command)
+
+
     def install(self):
         if(self.checkDependencies()):
             installation = self.genericInstallation[self.platform["dist"][0]]
@@ -166,6 +173,8 @@ class Installer:
                 self.platform["dist"][0]]
             for execution in installDocker:
                 call(execution)
+                
+            self.installDockerComposer()
 
 Installer = Installer()
 
