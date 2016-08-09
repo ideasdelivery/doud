@@ -25,7 +25,7 @@ class Installer:
         self.genericInstallation = {
             "ubuntu": [
                 ['apt-get', 'update'],
-                ["apt-get", "install", "apt-transport-https",
+                ["apt-get", "install","-y", "apt-transport-https",
                             "ca-certificates"],
                 ["apt-key", "adv", "--keyserver", "hkp://p80.pool.sks-keyservers.net:80",
                     "--recv-keys", "58118E89F3A912897C070ADBF76221572C52609D"],
@@ -41,7 +41,7 @@ class Installer:
                 "16": {
                     "commands": [
                         ["apt-get", "update"],
-                        ["apt-get", "install", "linux-image-extra-" +
+                        ["apt-get", "install","-y", "linux-image-extra-" +
                             self.platform["release"]]
                     ],
                     "docker_file": "/etc/apt/sources.list.d/docker.list",
@@ -58,7 +58,7 @@ class Installer:
                     "commands": [["apt-get", "install", "-y", "apparmor"]],
                     "min_kernel": "3.13",
                     "update_kernel": [
-                        ["apt-get", "install", "linux-image-generic-lts-trusty"]
+                        ["apt-get", "install","-y", "linux-image-generic-lts-trusty"]
                     ],
                     "docker_file": "/etc/apt/sources.list.d/docker.list",
                     "repo_content": ["deb https://apt.dockerproject.org/repo ubuntu-precise main"]
@@ -160,7 +160,7 @@ class Installer:
 
     def installDockerComposer(self):
         command = ["curl", "-L", "https://github.com/docker/compose/releases/download/1.8.0/docker-compose-" +
-                    self.platform.uname[0] + "-" + self.platform.uname[5], "-o",  "/usr/local/bin/docker-compose"]
+                    self.platform["uname"][0] + "-" + self.platform["uname"][5], "-o",  "/usr/local/bin/docker-compose"]
         call(command)
 
 
@@ -173,7 +173,7 @@ class Installer:
                 self.platform["dist"][0]]
             for execution in installDocker:
                 call(execution)
-                
+
             self.installDockerComposer()
 
 Installer = Installer()
