@@ -163,7 +163,7 @@ class Installer:
         commands = [["curl", "-L", "https://github.com/docker/compose/releases/download/1.8.0/docker-compose-" +
                      self.platform["uname"][0] + "-" + self.platform["uname"][5], "-o",  "/usr/local/bin/docker-compose"],
                     ["chmod", "+x", "/usr/local/bin/docker-compose"]]
-        for(command in commands):
+        for command in commands:
             call(command)
 
     def install(self):
