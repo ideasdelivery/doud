@@ -32,7 +32,7 @@ class Installer:
                 ["touch", "/etc/apt/sources.list.d/docker.list"]
             ],
             "centos": [
-                ["yum", "update"]
+                ["yum", "update","-y"]
 
             ]
         }
@@ -89,7 +89,7 @@ class Installer:
                 ["service", "docker", "start"]
             ],
             "centos": [
-                ["yum", "update"],
+                ["yum", "update","-y"],
                 ["yum", "install", "-y", "docker-engine"],
                 ["service", "docker", "start"]
             ]
