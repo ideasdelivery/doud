@@ -2,14 +2,14 @@
 
 Doud is a platform in develpment for manage docker images in your own clod.
 
-## who it works?
+## how it works?
 
-Doud only require add the parent server ssh key on all the child server and python 2.x installed.
+Doud only requires to add the parent's server ssh key on all the child servers and python 2.x installed.
 then you can run ./doud.py and add a child Server.
 
 ### add ssh-key to child servers
-add the server ssh-key to all the child servers. Check [generating ssh-key](https://help.github.com/articles/generating-an-ssh-key/).
-you can copy the key and add to ~/.ssh/authorized_keys on the child server.
+add the server's ssh-key to all the child servers. Check [generating ssh-key](https://help.github.com/articles/generating-an-ssh-key/).
+you can copy the key and add it to ~/.ssh/authorized_keys on the child server.
 
 ### 1. start doud
 execute doud.py
@@ -35,7 +35,7 @@ replace the [server_ip]
 
 ### 3. Test connection
 
-in doud execute the command run "ls"
+in doud, execute the command run "ls"
 
 ```
 $doud: run "ls"
@@ -63,8 +63,8 @@ $doud: run "docker --version"
 * you can exit doud width "ctrl + c"
 
 ## future functionalities
-* you will be able to install docker image and balance wetween servers width only a few commands in doud.
-* backup and deployt images in all server from doud.
+* you will be able to install docker image and balance between servers width only a few commands in doud.
+* backup and deployt images in all servers from doud.
 * more
 
 ## That's all for now...
