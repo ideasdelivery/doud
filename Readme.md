@@ -58,6 +58,30 @@ check the docker version installed on child servers.
 $doud: run "docker --version"
 ```
 
+### run command in only one server:
+
+Example width random local ip
+
+```
+$doud: run_in 192.168.1.53 "docker --version"
+```
+
+### list all servers:
+
+```
+$doud: servers
+```
+
+response:
+```
+$doud:
+* ip_server1
+* ip_server2
+* ...
+* ip_serverN
+```
+
+
 #### Anotations:
 
 * you can exit doud width "ctrl + c"
