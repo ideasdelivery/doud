@@ -11,9 +11,9 @@ then you can run ./doud.py and add a child Server.
 add the server's ssh-key to all the child servers. Check [generating ssh-key](https://help.github.com/articles/generating-an-ssh-key/).
 you can copy the key and add it to ~/.ssh/authorized_keys on the child server.
 
-## Demo
+## full demo
 
-![gif](http://i.imgur.com/4iGs2lp.gif)
+[demo](http://i.imgur.com/4iGs2lp.gif)
 
 
 ### 1. start doud
