@@ -1,6 +1,6 @@
 # Doud
 
-Doud is a platform in develpment for manage docker images in your own clod.
+Doud is a platform in develpment for manage docker images in your own cloud.
 
 ## how it works?
 
@@ -13,7 +13,7 @@ you can copy the key and add it to ~/.ssh/authorized_keys on the child server.
 
 ## Demo
 
-![gif](http://imgur.com/4iGs2lp)
+![gif](http://imgur.com/a/Y7alA)
 
 
 ### 1. start doud
