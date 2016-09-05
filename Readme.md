@@ -13,7 +13,7 @@ you can copy the key and add it to ~/.ssh/authorized_keys on the child server.
 
 ## Demo
 
-![gif](http://imgur.com/a/Y7alA.gif)
+![gif](http://i.imgur.com/4iGs2lp.gif)
 
 
 ### 1. start doud
