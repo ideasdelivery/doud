@@ -19,9 +19,9 @@ class Doud:
     def __init__(self):
         self.servers_file = "./servers_file.conf"
         self.help_str = (
-            "\taddChildServer <server_ip>: you can add a child server ip, but first they have to add the ssh key of this server on the other!",
-            "\trun \"<command>\": run command in all childs server",
-            "\tinstallDocker: this command'll install docker in all child servers"
+            "\taddChildServer <server_ip>: you can add a child server ip, but first they have to add the ssh key of this server on the other!.",
+            "\trun \"<command>\": run command in all childs server.",
+            "\tinstallDocker: this command'll install docker in all child servers."
             "\thelp: this command'll list all commands and a simple description of each command.")
         commands = ["run","run_in","servers" ,"addChildServer", "installDocker"]
 
